@@ -1,272 +1,442 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#071321">
-  <meta name="description" content="Brain MRI scan inspection and experimental machine-learning research workstation.">
-  <title>Brain MRI Intelligence</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111e">
+  <meta name="description" content="Brain MRI Intelligence — an AI-assisted research platform for MRI scan inspection and experimental brain image classification.">
+  <title>Brain MRI Intelligence | Neuro Imaging Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js"></script>
+  <script src="./app.js" defer></script>
 </head>
+
 <body>
-<div class="glow g1"></div>
-<div class="glow g2"></div>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
 
-<header>
-  <a class="brand" href="#top">
-    <span class="mark">Ψ</span>
-    <span>BRAIN<span class="cyan">MRI</span>
-      <small>INTELLIGENCE WORKSTATION</small>
-    </span>
-  </a>
-  <nav>
-    <a href="#platform">Platform</a>
-    <a href="#workstation">Workstation</a>
-    <a href="#safety">Safety</a>
-  </nav>
-  <div class="live"><i></i> RESEARCH EDITION</div>
-</header>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Brain MRI Intelligence home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M20 5.5c-4.7-4-12.2-.4-11.7 6.1-5.5 2.8-5 11.1.4 13.1-1 6.1 5.8 10.4 11.3 6.8 5.5 3.6 12.3-.7 11.3-6.8 5.4-2 5.9-10.3.4-13.1C32.2 5.1 24.7 1.5 20 5.5Z"/>
+          <path d="M20 6v27M11.3 11.5c4.5-.2 5.9 3.1 5.9 6.1M28.7 11.5c-4.5-.2-5.9 3.1-5.9 6.1M10 23c4.1-1.2 7.2 1 7.2 5M30 23c-4.1-1.2-7.2 1-7.2 5"/>
+        </svg>
+      </span>
+      <span class="brand-copy">
+        <strong>BRAIN MRI <span>INTELLIGENCE</span></strong>
+        <small>NEUROIMAGING RESEARCH PLATFORM</small>
+      </span>
+    </a>
 
-<main id="top">
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#platform">Platform</a>
+      <a href="#workstation">Workstation</a>
+      <a href="#models">AI Models</a>
+      <a href="#safety">Safety</a>
+    </nav>
 
-<section class="hero" id="platform">
-  <div>
-    <div class="eyebrow">MULTIMODAL NEUROIMAGING · RESEARCH PLATFORM</div>
-    <h1>See beyond<br><em>the scan.</em></h1>
-    <p class="intro">
-      A dedicated brain MRI workspace for scan inspection,
-      image visualization, metadata review and experimental
-      machine-learning research.
-    </p>
-
-    <div class="actions">
-      <a class="button primary" href="#workstation">
-        Launch workstation <b>↗</b>
-      </a>
-      <a class="button secondary" href="#capabilities">
-        Explore platform
-      </a>
+    <div class="topbar-right">
+      <span class="live-indicator"><i></i> RESEARCH ENVIRONMENT</span>
+      <a class="nav-cta" href="#workstation">Open workstation <span>↗</span></a>
     </div>
+  </header>
 
-    <div class="metrics">
-      <span>01 / IMAGE INSPECTION</span>
-      <span>02 / METADATA REVIEW</span>
-      <span>03 / AI RESEARCH</span>
-    </div>
-  </div>
+  <main>
+    <section class="hero section-wrap" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> AI-ASSISTED NEUROIMAGING</div>
+        <h1>See beyond<br>the <span>scan.</span></h1>
+        <p class="hero-description">
+          An intelligent research workspace for brain MRI inspection,
+          image analysis, and experimental deep-learning classification.
+          Bring imaging data and model insights into one focused environment.
+        </p>
 
-  <div class="visual">
-    <div class="ring r1"></div>
-    <div class="ring r2"></div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#workstation">
+            Launch MRI workstation <span>→</span>
+          </a>
+          <a class="button button-quiet" href="#platform">
+            Explore platform <span>↓</span>
+          </a>
+        </div>
 
-    <div class="scan-card">
-      <div class="scan-top">
-        NEURO / AXIAL VIEW
-        <span>● VISUAL SYSTEM</span>
-      </div>
-      <div class="brain">
-        <div class="brain-shape"></div>
-        <div class="scanlines"></div>
-      </div>
-      <div class="scan-bottom">
-        X 128.4&nbsp;&nbsp; Y 092.1&nbsp;&nbsp; Z 064.0
-      </div>
-    </div>
-
-    <div class="float f1">
-      MRI / DICOM
-      <strong>SCAN INSPECTION</strong>
-    </div>
-    <div class="float f2">
-      MODEL STATUS
-      <strong>DUAL RESEARCH PATHS</strong>
-    </div>
-  </div>
-</section>
-
-<section class="capabilities" id="capabilities">
-  <div class="eyebrow">THE WORKFLOW</div>
-  <h2>Built for a clearer research workflow.</h2>
-
-  <div class="feature-grid">
-    <article>
-      <b>01</b>
-      <h3>Scan visualization</h3>
-      <p>Inspect supported PNG, JPEG, DICOM and NIfTI files with a generated preview.</p>
-    </article>
-
-    <article>
-      <b>02</b>
-      <h3>Metadata review</h3>
-      <p>Review available image dimensions, modality, voxel spacing and file details.</p>
-    </article>
-
-    <article>
-      <b>03</b>
-      <h3>Two research paths</h3>
-      <p>Use the original MRI research endpoint or run the separately hosted MobileNetV2 binary research model.</p>
-    </article>
-  </div>
-</section>
-
-<section class="workstation" id="workstation">
-
-  <div class="work-title">
-    <div>
-      <div class="eyebrow">MRI WORKSTATION / 01</div>
-      <h2>Inspect a scan</h2>
-      <p>Select a scan. It is not sent to a backend until you click an action.</p>
-    </div>
-
-    <div class="status-stack">
-      <div id="backendStatus" class="backend-status">
-        Checking original backend…
-      </div>
-      <div id="mobilenetStatus" class="backend-status">
-        Checking MobileNetV2…
-      </div>
-    </div>
-  </div>
-
-  <div class="workspace">
-
-    <div class="upload-panel">
-
-      <div class="drop" id="drop">
-        <div class="plus">＋</div>
-        <h3>Load MRI scan</h3>
-        <p>PNG · JPG · DICOM · NIfTI</p>
-
-        <label class="button primary small" for="scanFile">
-          Choose scan
-        </label>
-
-        <input
-          id="scanFile"
-          type="file"
-          accept=".png,.jpg,.jpeg,.dcm,.dicom,.nii,.nii.gz,image/*"
-        >
-
-        <small id="fileName">
-          No file selected · 80 MB maximum
-        </small>
-      </div>
-
-      <button id="inspect" class="button primary full" disabled>
-        Inspect scan <b>→</b>
-      </button>
-
-      <button id="analyze" class="button secondary full" disabled>
-        Run original AI research analysis
-      </button>
-
-      <button id="mobilenetAnalyze" class="button secondary full mobile-button" disabled>
-        Run MobileNetV2 research model
-      </button>
-
-      <p id="mobilenetHint" class="privacy">
-        MobileNetV2 accepts PNG/JPG images up to 20 MB.
-        The original workflow retains its existing 80 MB limit.
-      </p>
-
-      <p class="privacy">
-        Files are sent only to the selected backend after you click
-        an action. Use de-identified sample scans only.
-        This demo has no user authentication.
-      </p>
-
-    </div>
-
-    <div class="viewer">
-      <div class="panel-head">
-        <span>IMAGE VIEWPORT</span>
-        <span id="previewStatus">AWAITING INPUT</span>
-      </div>
-
-      <div id="viewport" class="viewport">
-        <div class="empty">
-          <b>＋</b>
-          <span>Scan preview appears here</span>
+        <div class="hero-proof">
+          <div class="proof-item">
+            <span class="proof-icon">01</span>
+            <span><strong>Image inspection</strong><small>Upload and review scans</small></span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-icon">02</span>
+            <span><strong>AI experiments</strong><small>Separate model services</small></span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-icon">03</span>
+            <span><strong>Research-first</strong><small>Transparent limitations</small></span>
+          </div>
         </div>
       </div>
 
-      <div class="panel-foot">
-        <span id="dimensions">NO IMAGE LOADED</span>
-        <span>RESEARCH VIEW</span>
+      <div class="hero-visual" aria-label="Illustrative brain MRI visualization">
+        <div class="visual-topline">
+          <span><i class="tiny-dot"></i> NEURO IMAGING / VIEW 01</span>
+          <span>AXIAL · ILLUSTRATIVE</span>
+        </div>
+
+        <div class="scan-stage">
+          <div class="scan-grid"></div>
+          <div class="scan-crosshair horizontal"></div>
+          <div class="scan-crosshair vertical"></div>
+          <div class="scan-ring ring-one"></div>
+          <div class="scan-ring ring-two"></div>
+          <div class="scan-ring ring-three"></div>
+
+          <div class="brain-illustration">
+            <svg viewBox="0 0 420 340" role="img" aria-label="Synthetic illustrative axial brain scan graphic">
+              <defs>
+                <radialGradient id="brainGlow">
+                  <stop offset="0" stop-color="#dceaf0"/>
+                  <stop offset=".48" stop-color="#9aadb9"/>
+                  <stop offset=".78" stop-color="#506575"/>
+                  <stop offset="1" stop-color="#172b3b"/>
+                </radialGradient>
+                <filter id="brainBlur"><feGaussianBlur stdDeviation="2.5"/></filter>
+                <clipPath id="brainClip">
+                  <path d="M210 38 C165 20 111 48 88 91 C57 148 77 226 123 275 C149 303 180 311 210 294 C240 311 271 303 297 275 C343 226 363 148 332 91 C309 48 255 20 210 38Z"/>
+                </clipPath>
+              </defs>
+              <path d="M210 38 C165 20 111 48 88 91 C57 148 77 226 123 275 C149 303 180 311 210 294 C240 311 271 303 297 275 C343 226 363 148 332 91 C309 48 255 20 210 38Z" fill="url(#brainGlow)" opacity=".95"/>
+              <g clip-path="url(#brainClip)" fill="none" stroke="#e4f3f7" stroke-opacity=".5" stroke-width="2">
+                <path d="M210 43 C181 70 179 104 194 130 C206 151 191 178 170 190 C145 205 145 243 169 276"/>
+                <path d="M210 43 C239 70 241 104 226 130 C214 151 229 178 250 190 C275 205 275 243 251 276"/>
+                <path d="M99 102 C129 94 148 111 150 137 C152 159 130 171 112 166"/>
+                <path d="M321 102 C291 94 272 111 270 137 C268 159 290 171 308 166"/>
+                <path d="M91 158 C122 142 145 159 147 184 C149 209 128 221 108 213"/>
+                <path d="M329 158 C298 142 275 159 273 184 C271 209 292 221 312 213"/>
+                <path d="M111 225 C139 205 164 221 164 247 C164 264 179 278 194 284"/>
+                <path d="M309 225 C281 205 256 221 256 247 C256 264 241 278 226 284"/>
+                <path d="M126 77 C155 65 178 83 176 107"/>
+                <path d="M294 77 C265 65 242 83 244 107"/>
+                <path d="M210 55 L210 285" stroke-opacity=".25"/>
+              </g>
+              <path d="M191 142 C198 130 205 132 210 143 C215 132 222 130 229 142 C239 160 226 177 210 184 C194 177 181 160 191 142Z" fill="#172b3a" opacity=".8"/>
+              <ellipse cx="210" cy="168" rx="114" ry="130" fill="none" stroke="#e7f6fa" stroke-opacity=".28" stroke-width="1.5"/>
+              <ellipse cx="210" cy="168" rx="94" ry="111" fill="none" stroke="#e7f6fa" stroke-opacity=".16" stroke-width="1"/>
+            </svg>
+          </div>
+
+          <span class="scan-label label-left">L</span>
+          <span class="scan-label label-right">R</span>
+          <span class="scan-label label-top">SUPERIOR</span>
+          <span class="scan-label label-bottom">INFERIOR</span>
+          <div class="scan-scale"><span></span><small>50 mm</small></div>
+        </div>
+
+        <div class="visual-footer">
+          <div><small>VISUALIZATION MODE</small><strong>AXIAL BRAIN / SYNTHETIC</strong></div>
+          <div><small>PLATFORM STATUS</small><strong class="status-ready"><i></i> READY</strong></div>
+        </div>
+        <p class="visual-disclaimer">Illustrative graphic only · Not a patient scan or diagnostic image</p>
       </div>
-    </div>
+    </section>
 
-  </div>
-
-  <div class="results">
-
-    <div class="result">
-      <div class="panel-head">SCAN METADATA</div>
-      <div id="metadata" class="metadata">
-        <p>Metadata will appear after inspection.</p>
+    <section class="platform-strip" id="platform">
+      <div class="section-wrap strip-inner">
+        <div><span class="strip-number">01</span><strong>INSPECT</strong><small>Review image files and metadata</small></div>
+        <div><span class="strip-number">02</span><strong>ANALYZE</strong><small>Run available research services</small></div>
+        <div><span class="strip-number">03</span><strong>COMPARE</strong><small>Review experimental model outputs</small></div>
+        <div><span class="strip-number">04</span><strong>INTERPRET CAREFULLY</strong><small>Understand limitations and uncertainty</small></div>
       </div>
-    </div>
+    </section>
 
-    <div class="result">
-      <div class="panel-head">ORIGINAL AI RESEARCH OUTPUT</div>
-      <div id="analysis" class="analysis">
-        <p>Original backend analysis is available through its existing endpoint.</p>
-      </div>
-    </div>
-
-    <div class="result mobilenet-result">
-      <div class="panel-head">
-        <span>MOBILENETV2 / EXPERIMENTAL RESEARCH OUTPUT</span>
-        <span class="research-tag">SEPARATE API</span>
-      </div>
-
-      <div id="mobilenetAnalysis" class="analysis">
+    <section class="section-wrap intro-section" id="models">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> THE RESEARCH WORKFLOW</div>
+          <h2>Imaging intelligence,<br><span>in one workspace.</span></h2>
+        </div>
         <p>
-          MobileNetV2 results will appear here after you run
-          the separate research model.
+          The platform connects scan inspection with two independently hosted
+          inference services. Each service has its own status and output area.
         </p>
       </div>
 
-      <div id="mobilenetMetrics" class="metric-grid" aria-live="polite"></div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">⌕</div>
+          <span class="feature-index">01 / IMAGE INTAKE</span>
+          <h3>Scan inspection</h3>
+          <p>Upload a supported image, preview it locally, and request metadata from the original API.</p>
+          <span class="feature-link">IMAGE WORKFLOW <b>↗</b></span>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">◈</div>
+          <span class="feature-index">02 / MODEL SERVICE</span>
+          <h3>Original AI service</h3>
+          <p>Connect to the existing backend for its supported inspection and experimental analysis routes.</p>
+          <span class="feature-link">ORIGINAL BACKEND <b>↗</b></span>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">⌘</div>
+          <span class="feature-index">03 / EXPERIMENTAL MODEL</span>
+          <h3>MobileNetV2 research</h3>
+          <p>Run a separate binary classification experiment through the independently deployed model API.</p>
+          <span class="feature-link">SEPARATE MODEL API <b>↗</b></span>
+        </article>
+      </div>
+    </section>
 
-      <p class="clinical-warning">
-        Research and educational use only. This model is not
-        clinically validated. Its reported sensitivity is
-        approximately 29%, meaning it may miss many tumor-positive
-        cases. A low tumor probability does not rule out a tumor.
-        Never use this output for diagnosis or medical decisions.
-      </p>
+    <section class="workstation-section" id="workstation">
+      <div class="section-wrap">
+        <div class="section-heading workstation-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> 02 / LIVE WORKSPACE</div>
+            <h2>Neuro imaging <span>workstation.</span></h2>
+          </div>
+          <div class="workspace-status">
+            <span class="status-pill"><i></i> CLIENT READY</span>
+            <span class="mono-text">SESSION / LOCAL BROWSER</span>
+          </div>
+        </div>
+
+        <div class="service-status-grid">
+          <div class="service-status-card">
+            <div class="service-status-top">
+              <span class="service-symbol">01</span>
+              <span class="service-label">ORIGINAL BACKEND</span>
+            </div>
+            <strong id="backendStatus" class="service-state">● CHECKING API STATUS…</strong>
+            <small>Original MRI inspection and analysis service</small>
+          </div>
+          <div class="service-status-card">
+            <div class="service-status-top">
+              <span class="service-symbol">02</span>
+              <span class="service-label">MOBILENETV2 SERVICE</span>
+            </div>
+            <strong id="mobilenetStatus" class="service-state">● CHECKING MODEL STATUS…</strong>
+            <small id="mobilenetHint">Checking separate research inference service…</small>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <aside class="control-panel panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">INPUT MODULE / 01</span>
+                <h3>Scan intake</h3>
+              </div>
+              <span class="panel-number">01</span>
+            </div>
+
+            <div class="upload-zone" id="drop">
+              <input type="file" id="scanFile" accept=".png,.jpg,.jpeg,.nii,.nii.gz,.dcm,.dicom,image/png,image/jpeg" hidden>
+              <div class="upload-graphic">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 31V8m0 0-8 8m8-8 8 8M9 29v9a2 2 0 0 0 2 2h26a2 2 0 0 0 2-2v-9" />
+                </svg>
+              </div>
+              <strong>Drop your scan here</strong>
+              <p>or select an imaging file from your device</p>
+              <label class="button button-outline upload-button" for="scanFile">Choose scan <span>＋</span></label>
+              <span class="upload-formats">PNG · JPG · JPEG · Other formats depend on backend support</span>
+            </div>
+
+            <div class="file-summary">
+              <div class="file-icon">FILE</div>
+              <div class="file-copy">
+                <strong id="fileName">No file selected · 80 MB maximum</strong>
+                <small>Selected input</small>
+              </div>
+              <span class="file-state">LOCAL</span>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="action-group">
+              <span class="field-label">IMAGE OPERATIONS</span>
+              <button class="button button-secondary button-full" id="inspect" type="button" disabled>
+                <span class="button-icon">⌕</span> Inspect scan <span class="button-arrow">→</span>
+              </button>
+              <button class="button button-primary button-full" id="analyze" type="button" disabled>
+                <span class="button-icon">◈</span> Run original AI analysis <span class="button-arrow">→</span>
+              </button>
+            </div>
+
+            <div class="panel-note">
+              <span class="note-icon">i</span>
+              <p>File previews are created locally in your browser. Uploads are sent to the selected backend only when you run an operation.</p>
+            </div>
+          </aside>
+
+          <section class="viewer-panel panel">
+            <div class="panel-heading viewer-heading">
+              <div>
+                <span class="panel-kicker">IMAGE VIEWER / 02</span>
+                <h3>Scan visualization</h3>
+              </div>
+              <div class="viewer-controls">
+                <span id="previewStatus" class="viewer-badge">AWAITING INPUT</span>
+                <span class="viewer-menu">•••</span>
+              </div>
+            </div>
+
+            <div class="viewport" id="viewport">
+              <div class="viewer-grid"></div>
+              <div class="empty">
+                <div class="empty-scan-icon">◎</div>
+                <strong>Imaging viewport</strong>
+                <span>Select a scan to display its local preview</span>
+                <small>NO IMAGE LOADED</small>
+              </div>
+              <div class="viewport-corner corner-tl"></div>
+              <div class="viewport-corner corner-tr"></div>
+              <div class="viewport-corner corner-bl"></div>
+              <div class="viewport-corner corner-br"></div>
+            </div>
+
+            <div class="viewer-toolbar">
+              <span><i class="tiny-dot"></i> IMAGE PREVIEW</span>
+              <span id="dimensions">NO DIMENSIONS</span>
+            </div>
+
+            <div class="metadata-section">
+              <div class="subsection-heading">
+                <span>SCAN METADATA</span>
+                <small>BACKEND RESPONSE</small>
+              </div>
+              <div class="metadata-grid" id="metadata">
+                <div class="metadata-placeholder">Metadata will appear after scan inspection.</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="results-grid">
+          <section class="result-panel panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">INFERENCE OUTPUT / 03A</span>
+                <h3>Original AI analysis</h3>
+              </div>
+              <span class="model-tag">ORIGINAL API</span>
+            </div>
+            <div class="result-body" id="analysis">
+              <div class="result-empty">
+                <span class="result-empty-icon">◈</span>
+                <strong>Awaiting analysis</strong>
+                <p>Choose a scan and run the original AI analysis to view its response here.</p>
+              </div>
+            </div>
+            <div class="result-foot">OUTPUT SOURCE <strong>ORIGINAL MRI BACKEND</strong></div>
+          </section>
+
+          <section class="result-panel panel mobilenet-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-kicker">INFERENCE OUTPUT / 03B</span>
+                <h3>MobileNetV2 research</h3>
+              </div>
+              <span class="model-tag model-tag-teal">SEPARATE API</span>
+            </div>
+
+            <div class="model-description">
+              <span class="model-orbit">M</span>
+              <div>
+                <strong>MobileNetV2 · 100</strong>
+                <p>Independent experimental binary classifier</p>
+              </div>
+            </div>
+
+            <button class="button button-primary button-full mobilenet-button" id="mobilenetAnalyze" type="button" disabled>
+              <span class="button-icon">⌘</span> Run MobileNetV2 inference <span class="button-arrow">→</span>
+            </button>
+
+            <div class="result-body mobilenet-output" id="mobilenetAnalysis">
+              <div class="result-empty">
+                <span class="result-empty-icon">⌘</span>
+                <strong>Research model standing by</strong>
+                <p>Select a PNG or JPG image up to 20 MB to run this separate model.</p>
+              </div>
+            </div>
+
+            <div class="metrics-section">
+              <div class="subsection-heading">
+                <span>RESEARCH METRICS</span>
+                <small>MODEL EVALUATION</small>
+              </div>
+              <div class="metric-grid" id="mobilenetMetrics">
+                <div class="metric-placeholder">Metrics load when the model status endpoint responds.</div>
+              </div>
+            </div>
+
+            <div class="result-foot">OUTPUT SOURCE <strong>MOBILENETV2 RESEARCH API</strong></div>
+          </section>
+        </div>
+
+        <div class="message-bar" role="status" aria-live="polite">
+          <span class="message-indicator"></span>
+          <span id="message">Workspace initialized. Select an image to begin.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap safety-section" id="safety">
+      <div class="safety-card">
+        <div class="safety-symbol">!</div>
+        <div class="safety-copy">
+          <span class="panel-kicker">IMPORTANT / RESEARCH SAFETY</span>
+          <h2>Research output is not a medical diagnosis.</h2>
+          <p>
+            This platform is an experimental research and software demonstration.
+            Its AI outputs are not clinically validated and must not be used to
+            diagnose, exclude, or treat a brain condition.
+          </p>
+          <ul>
+            <li>MobileNetV2 is an experimental binary classifier, not a clinical decision system.</li>
+            <li>Its reported sensitivity is limited; a low tumor probability does not rule out a tumor.</li>
+            <li>It does not determine tumor location, type, grade, or treatment.</li>
+            <li>All medical imaging must be reviewed by a qualified healthcare professional.</li>
+          </ul>
+        </div>
+        <div class="safety-side">
+          <span>MODEL STATUS</span>
+          <strong>NOT CLINICALLY<br>VALIDATED</strong>
+          <small>Research use only</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap closing-section">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> RESEARCH. REVIEW. RESPONSIBILITY.</div>
+        <h2>Better tools for<br><span>careful exploration.</span></h2>
+      </div>
+      <a href="#workstation" class="button button-primary">Return to workstation <span>↑</span></a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="section-wrap footer-inner">
+      <a class="brand footer-brand" href="#home">
+        <span class="brand-mark">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 5.5c-4.7-4-12.2-.4-11.7 6.1-5.5 2.8-5 11.1.4 13.1-1 6.1 5.8 10.4 11.3 6.8 5.5 3.6 12.3-.7 11.3-6.8 5.4-2 5.9-10.3.4-13.1C32.2 5.1 24.7 1.5 20 5.5Z"/>
+            <path d="M20 6v27M11.3 11.5c4.5-.2 5.9 3.1 5.9 6.1M28.7 11.5c-4.5-.2-5.9 3.1-5.9 6.1"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>BRAIN MRI <span>INTELLIGENCE</span></strong>
+          <small>NEUROIMAGING RESEARCH PLATFORM</small>
+        </span>
+      </a>
+      <p>Experimental research platform · Not for clinical use</p>
+      <a href="#home" class="back-top">BACK TO TOP ↑</a>
     </div>
-
-  </div>
-
-  <div id="message" class="message" role="status" aria-live="polite"></div>
-
-</section>
-
-<section class="safety" id="safety">
-  <div class="warning">!</div>
-  <div>
-    <strong>Research prototype — not for clinical use</strong>
-    <p>
-      This application is not a medical device. It does not diagnose,
-      rule out disease or recommend treatment. Experimental model
-      outputs must never be used for clinical decisions.
-      Consult qualified medical professionals.
-    </p>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <span>© 2026 BRAIN MRI INTELLIGENCE</span>
-  <span>INDEPENDENT RESEARCH PLATFORM · NON-DIAGNOSTIC</span>
-</footer>
-
-<script src="config.js"></script>
-<script src="app.js"></script>
-
+  </footer>
 </body>
 </html>
