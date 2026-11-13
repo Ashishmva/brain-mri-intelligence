@@ -7,6 +7,17 @@ const MOBILENET_API = "https://brain-mri-mobilenetv2-api.onrender.com";
 let selectedFile = null;
 let localPreview = null;
 
+// Webcam scanner state
+let cameraStream = null;
+let cameraRunning = false;
+let scanRunning = false;
+let scanPaused = false;
+let scanAnimation = null;
+let scanCaptureTimer = null;
+let scanLinePosition = 0;
+let capturedFrames = [];
+let cameraElements = null;
+
 function showMessage(text, error = false) {
   $("message").textContent = text;
   $("message").style.color = error ? "#ff9b9b" : "#68dce9";
@@ -47,7 +58,6 @@ function isSupportedMobileNetFile(file) {
 
 // --------------------------------------------------
 // ORIGINAL BRAIN MRI BACKEND
-// Existing API connection and functionality preserved
 // --------------------------------------------------
 
 async function checkBackend() {
@@ -213,7 +223,6 @@ function setFile(file) {
       "Please choose a non-empty file no larger than 80 MB.",
       true
     );
-
   } else {
     showMessage("");
   }
@@ -348,7 +357,6 @@ $("inspect").addEventListener("click", async () => {
 
 // --------------------------------------------------
 // ORIGINAL MRI ANALYSIS
-// Existing endpoint and response handling preserved
 // --------------------------------------------------
 
 $("analyze").addEventListener("click", async () => {
@@ -384,7 +392,6 @@ $("analyze").addEventListener("click", async () => {
 
 // --------------------------------------------------
 // SEPARATE MOBILENETV2 ANALYSIS
-// Does not modify or replace the original backend
 // --------------------------------------------------
 
 $("mobilenetAnalyze").addEventListener("click", async () => {
@@ -501,9 +508,741 @@ $("mobilenetAnalyze").addEventListener("click", async () => {
   }
 });
 
+// ==================================================
+// WEBCAM MRI AUTOMATIC LINE SCANNER
+// Captures images of existing MRI film/screens.
+// This does not acquire actual MRI medical data.
+// ==================================================
+
+function installCameraScanner() {
+  if (!$("drop") || $("cameraScannerButton")) return;
+
+  const style = document.createElement("style");
+
+  style.textContent = `
+    .mri-camera-launch {
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px 18px;
+      border: 1px solid rgba(104,220,233,.55);
+      border-radius: 12px;
+      color: #baf8ff;
+      background: linear-gradient(110deg,#10354a,#10243c);
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .mri-camera-launch:hover {
+      background: #17445b;
+      box-shadow: 0 0 22px rgba(104,220,233,.16);
+    }
+
+    .mri-camera-panel {
+      display: none;
+      margin-top: 20px;
+      padding: 18px;
+      border: 1px solid rgba(104,220,233,.3);
+      border-radius: 16px;
+      background: #081827;
+      color: #e8f7ff;
+    }
+
+    .mri-camera-panel.active {
+      display: block;
+    }
+
+    .mri-camera-panel h3 {
+      margin: 0 0 8px;
+      color: #9ceefa;
+    }
+
+    .mri-camera-description {
+      color: #a7bdcb;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .mri-camera-stage {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 16px;
+      border: 1px solid #28546b;
+      border-radius: 12px;
+      background: #020a12;
+      aspect-ratio: 16/9;
+    }
+
+    .mri-camera-stage video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mri-camera-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #8da9ba;
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .mri-scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #50f5ff;
+      box-shadow: 0 0 12px #50f5ff,0 0 28px #50f5ff;
+      pointer-events: none;
+      display: none;
+    }
+
+    .mri-scan-line::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 3px;
+      height: 35px;
+      background: linear-gradient(
+        to bottom,
+        rgba(80,245,255,.18),
+        transparent
+      );
+    }
+
+    .mri-camera-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .mri-camera-controls button {
+      padding: 11px 15px;
+      border: 1px solid #315a70;
+      border-radius: 9px;
+      background: #112b40;
+      color: #e7faff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .mri-camera-controls button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .mri-camera-controls .mri-primary {
+      background: #07586b;
+      border-color: #37d9ec;
+    }
+
+    .mri-camera-status {
+      margin-top: 12px;
+      color: #72e3ed;
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    .mri-camera-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(145px,1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .mri-frame-card {
+      padding: 9px;
+      border: 1px solid #29465a;
+      border-radius: 10px;
+      background: #0d2030;
+      min-width: 0;
+    }
+
+    .mri-frame-card img {
+      width: 100%;
+      display: block;
+      border-radius: 6px;
+      aspect-ratio: 4/3;
+      object-fit: contain;
+      background: #02080d;
+    }
+
+    .mri-frame-card small {
+      display: block;
+      margin: 8px 0;
+      color: #a9c5d4;
+      font-size: 11px;
+    }
+
+    .mri-frame-card button {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      border-radius: 7px;
+      border: 1px solid #326176;
+      background: #102e42;
+      color: #c9f5ff;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .mri-camera-warning {
+      margin-top: 15px;
+      padding: 12px;
+      border-left: 3px solid #e5b96b;
+      background: rgba(229,185,107,.08);
+      color: #e8d2a9;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  const launch = document.createElement("button");
+
+  launch.id = "cameraScannerButton";
+  launch.type = "button";
+  launch.className = "mri-camera-launch";
+  launch.textContent = "▤  OPEN WEBCAM MRI AUTOMATIC LINE SCANNER";
+
+  const panel = document.createElement("section");
+
+  panel.id = "mriCameraPanel";
+  panel.className = "mri-camera-panel";
+
+  panel.innerHTML = `
+    <h3>WEBCAM MRI CAPTURE SYSTEM</h3>
+
+    <p class="mri-camera-description">
+      Position an existing MRI film or MRI image displayed on a monitor
+      in front of the camera. The moving line guides the automatic
+      frame-capture sequence.
+    </p>
+
+    <div class="mri-camera-stage">
+      <video id="mriCameraVideo" autoplay muted playsinline></video>
+
+      <div id="mriCameraPlaceholder" class="mri-camera-placeholder">
+        Camera preview will appear here after permission is granted.
+      </div>
+
+      <div id="mriScanLine" class="mri-scan-line"></div>
+    </div>
+
+    <div class="mri-camera-controls">
+      <button type="button" id="mriStartCamera" class="mri-primary">
+        1 · START CAMERA
+      </button>
+
+      <button type="button" id="mriBeginScan" class="mri-primary" disabled>
+        2 · START AUTO SCAN
+      </button>
+
+      <button type="button" id="mriPauseScan" disabled>
+        PAUSE
+      </button>
+
+      <button type="button" id="mriStopScan" disabled>
+        STOP
+      </button>
+
+      <button type="button" id="mriClearFrames">
+        CLEAR CAPTURES
+      </button>
+    </div>
+
+    <div id="mriCameraStatus" class="mri-camera-status">
+      CAMERA STANDBY
+    </div>
+
+    <div class="mri-camera-warning">
+      IMPORTANT: This feature photographs an existing MRI image or film.
+      It does not perform MRI scanning, recover original DICOM data,
+      reconstruct anatomical slices, or provide a medical diagnosis.
+      Camera photographs may lose image detail and must not replace
+      the original MRI files.
+    </div>
+
+    <h3 style="margin-top:22px">CAPTURED FRAME GALLERY</h3>
+
+    <p class="mri-camera-description">
+      Each captured frame can be downloaded or selected for the existing
+      image-analysis workflow.
+    </p>
+
+    <div id="mriCameraGallery" class="mri-camera-gallery"></div>
+  `;
+
+  $("drop").insertAdjacentElement("afterend", launch);
+  launch.insertAdjacentElement("afterend", panel);
+
+  cameraElements = {
+    panel,
+    launch,
+    video: $("mriCameraVideo"),
+    placeholder: $("mriCameraPlaceholder"),
+    line: $("mriScanLine"),
+    status: $("mriCameraStatus"),
+    gallery: $("mriCameraGallery"),
+    startCamera: $("mriStartCamera"),
+    beginScan: $("mriBeginScan"),
+    pauseScan: $("mriPauseScan"),
+    stopScan: $("mriStopScan"),
+    clearFrames: $("mriClearFrames")
+  };
+
+  launch.addEventListener("click", () => {
+    panel.classList.toggle("active");
+
+    if (panel.classList.contains("active")) {
+      panel.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+  });
+
+  cameraElements.startCamera.addEventListener(
+    "click",
+    startCamera
+  );
+
+  cameraElements.beginScan.addEventListener(
+    "click",
+    beginAutomaticScan
+  );
+
+  cameraElements.pauseScan.addEventListener(
+    "click",
+    toggleScanPause
+  );
+
+  cameraElements.stopScan.addEventListener(
+    "click",
+    stopAutomaticScan
+  );
+
+  cameraElements.clearFrames.addEventListener(
+    "click",
+    clearCapturedFrames
+  );
+
+  window.addEventListener("beforeunload", stopCamera);
+}
+
 // --------------------------------------------------
-// INITIALIZE BOTH BACKEND CONNECTIONS
+// START WEBCAM
 // --------------------------------------------------
+
+async function startCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    cameraElements.status.textContent =
+      "CAMERA NOT AVAILABLE · USE HTTPS OR A SUPPORTED BROWSER";
+
+    return;
+  }
+
+  try {
+    cameraElements.startCamera.disabled = true;
+    cameraElements.status.textContent =
+      "REQUESTING CAMERA PERMISSION…";
+
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
+      }
+    });
+
+    cameraElements.video.srcObject = cameraStream;
+
+    await cameraElements.video.play();
+
+    cameraRunning = true;
+
+    cameraElements.placeholder.style.display = "none";
+    cameraElements.line.style.display = "block";
+
+    cameraElements.beginScan.disabled = false;
+    cameraElements.startCamera.textContent = "CAMERA CONNECTED";
+
+    cameraElements.status.textContent =
+      "CAMERA READY · POSITION MRI FILM OR DISPLAY IN VIEW";
+
+  } catch (error) {
+    cameraRunning = false;
+    cameraElements.startCamera.disabled = false;
+
+    cameraElements.status.textContent =
+      "CAMERA ERROR · " + error.message;
+
+    showMessage(
+      "Unable to access webcam. Check browser camera permission.",
+      true
+    );
+  }
+}
+
+// --------------------------------------------------
+// AUTOMATIC LINE SCAN
+// --------------------------------------------------
+
+function beginAutomaticScan() {
+  if (!cameraRunning || !cameraElements.video.videoWidth) {
+    cameraElements.status.textContent =
+      "START THE CAMERA AND WAIT FOR THE PREVIEW FIRST.";
+
+    return;
+  }
+
+  if (scanRunning) return;
+
+  scanRunning = true;
+  scanPaused = false;
+  scanLinePosition = 0;
+
+  cameraElements.line.style.top = "0%";
+
+  cameraElements.beginScan.disabled = true;
+  cameraElements.pauseScan.disabled = false;
+  cameraElements.stopScan.disabled = false;
+
+  cameraElements.pauseScan.textContent = "PAUSE";
+
+  cameraElements.status.textContent =
+    "AUTOMATIC CAPTURE RUNNING · 12 FRAME TARGET";
+
+  let lastFrameTime = 0;
+
+  const duration = 18000;
+  const maximumFrames = 12;
+  const startTime = performance.now();
+
+  function animateScan(now) {
+    if (!scanRunning) return;
+
+    if (scanPaused) {
+      scanAnimation = requestAnimationFrame(animateScan);
+      return;
+    }
+
+    const elapsed = now - startTime;
+    const progress = Math.min(
+      ((elapsed / duration) * 100) % 100,
+      100
+    );
+
+    scanLinePosition = progress;
+
+    cameraElements.line.style.top =
+      scanLinePosition + "%";
+
+    if (
+      now - lastFrameTime >= 1500 &&
+      capturedFrames.length < maximumFrames
+    ) {
+      lastFrameTime = now;
+      captureCameraFrame();
+    }
+
+    if (elapsed >= duration || capturedFrames.length >= maximumFrames) {
+      stopAutomaticScan();
+
+      cameraElements.status.textContent =
+        "SCAN SEQUENCE COMPLETE · " +
+        capturedFrames.length +
+        " FRAMES CAPTURED";
+
+      return;
+    }
+
+    scanAnimation = requestAnimationFrame(animateScan);
+  }
+
+  scanAnimation = requestAnimationFrame(animateScan);
+}
+
+// --------------------------------------------------
+// PAUSE / RESUME
+// --------------------------------------------------
+
+function toggleScanPause() {
+  if (!scanRunning) return;
+
+  scanPaused = !scanPaused;
+
+  cameraElements.pauseScan.textContent =
+    scanPaused ? "RESUME" : "PAUSE";
+
+  cameraElements.status.textContent = scanPaused
+    ? "SCAN PAUSED · CAMERA STILL ACTIVE"
+    : "AUTOMATIC CAPTURE RESUMED";
+}
+
+// --------------------------------------------------
+// CAPTURE CAMERA FRAME
+// --------------------------------------------------
+
+function captureCameraFrame() {
+  if (!cameraRunning || !cameraElements.video.videoWidth) {
+    return;
+  }
+
+  const video = cameraElements.video;
+
+  const canvas = document.createElement("canvas");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const context = canvas.getContext("2d");
+
+  if (!context) return;
+
+  context.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const imageData = canvas.toDataURL("image/jpeg", 0.92);
+
+  const index = capturedFrames.length + 1;
+
+  const frame = {
+    id: Date.now() + "-" + index,
+    name: "MRI-Camera-Frame-" + String(index).padStart(2, "0") + ".jpg",
+    dataUrl: imageData,
+    width: canvas.width,
+    height: canvas.height,
+    time: new Date().toLocaleTimeString()
+  };
+
+  capturedFrames.push(frame);
+
+  renderCapturedGallery();
+
+  cameraElements.status.textContent =
+    "CAPTURED FRAME " +
+    index +
+    " / 12 · " +
+    canvas.width +
+    " × " +
+    canvas.height;
+}
+
+// --------------------------------------------------
+// RENDER CAPTURED FRAME GALLERY
+// --------------------------------------------------
+
+function renderCapturedGallery() {
+  cameraElements.gallery.innerHTML = capturedFrames
+    .map((frame, index) => `
+      <div class="mri-frame-card">
+        <img
+          src="${frame.dataUrl}"
+          alt="Captured camera frame ${index + 1}"
+        >
+
+        <small>
+          FRAME ${index + 1}<br>
+          ${escapeHtml(frame.time)}<br>
+          ${frame.width} × ${frame.height}
+        </small>
+
+        <button
+          type="button"
+          data-frame-download="${index}"
+        >
+          DOWNLOAD IMAGE
+        </button>
+
+        <button
+          type="button"
+          data-frame-use="${index}"
+        >
+          USE FOR MRI ANALYSIS
+        </button>
+      </div>
+    `)
+    .join("");
+
+  cameraElements.gallery
+    .querySelectorAll("[data-frame-download]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const frame = capturedFrames[
+          Number(button.dataset.frameDownload)
+        ];
+
+        downloadCapturedFrame(frame);
+      });
+    });
+
+  cameraElements.gallery
+    .querySelectorAll("[data-frame-use]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const frame = capturedFrames[
+          Number(button.dataset.frameUse)
+        ];
+
+        useCapturedFrame(frame);
+      });
+    });
+}
+
+// --------------------------------------------------
+// DOWNLOAD CAPTURED IMAGE
+// --------------------------------------------------
+
+function downloadCapturedFrame(frame) {
+  if (!frame) return;
+
+  const link = document.createElement("a");
+
+  link.href = frame.dataUrl;
+  link.download = frame.name;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+// --------------------------------------------------
+// SELECT CAPTURE FOR EXISTING MRI ANALYSIS
+// --------------------------------------------------
+
+function useCapturedFrame(frame) {
+  if (!frame) return;
+
+  try {
+    const binary = atob(frame.dataUrl.split(",")[1]);
+
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    const file = new File(
+      [bytes],
+      frame.name,
+      { type: "image/jpeg" }
+    );
+
+    const transfer = new DataTransfer();
+
+    transfer.items.add(file);
+
+    $("scanFile").files = transfer.files;
+
+    setFile(file);
+
+    showMessage(
+      "Captured camera frame selected. You can now Inspect or run the existing research analysis."
+    );
+
+    $("scanFile").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+  } catch (error) {
+    showMessage(
+      "Unable to select this captured frame: " + error.message,
+      true
+    );
+  }
+}
+
+// --------------------------------------------------
+// STOP AUTOMATIC SCAN
+// --------------------------------------------------
+
+function stopAutomaticScan() {
+  scanRunning = false;
+  scanPaused = false;
+
+  if (scanAnimation) {
+    cancelAnimationFrame(scanAnimation);
+    scanAnimation = null;
+  }
+
+  if (!cameraElements) return;
+
+  cameraElements.beginScan.disabled = !cameraRunning;
+  cameraElements.pauseScan.disabled = true;
+  cameraElements.stopScan.disabled = true;
+
+  cameraElements.pauseScan.textContent = "PAUSE";
+
+  if (cameraRunning) {
+    cameraElements.status.textContent =
+      "SCAN STOPPED · " +
+      capturedFrames.length +
+      " FRAMES AVAILABLE";
+  }
+}
+
+// --------------------------------------------------
+// CLEAR GALLERY
+// --------------------------------------------------
+
+function clearCapturedFrames() {
+  if (scanRunning) {
+    stopAutomaticScan();
+  }
+
+  capturedFrames = [];
+
+  cameraElements.gallery.innerHTML = "";
+
+  cameraElements.status.textContent =
+    "CAPTURE GALLERY CLEARED";
+}
+
+// --------------------------------------------------
+// STOP WEBCAM AND RELEASE CAMERA
+// --------------------------------------------------
+
+function stopCamera() {
+  stopAutomaticScan();
+
+  if (cameraStream) {
+    cameraStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    cameraStream = null;
+  }
+
+  cameraRunning = false;
+
+  if (cameraElements) {
+    cameraElements.video.srcObject = null;
+  }
+}
+
+// --------------------------------------------------
+// INITIALIZE CAMERA SCANNER AND BOTH BACKENDS
+// --------------------------------------------------
+
+installCameraScanner();
 
 checkBackend();
 checkMobileNetBackend();
