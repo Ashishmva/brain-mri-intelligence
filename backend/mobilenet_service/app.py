@@ -103,7 +103,7 @@ def prepare_image(image_bytes):
 
         array = np.asarray(image, dtype=np.float32) / 255.0
 
-               preprocessing = CONFIG["preprocessing"]
+        preprocessing = CONFIG["preprocessing"]
 
         mean = np.array(
             preprocessing["mean"],
