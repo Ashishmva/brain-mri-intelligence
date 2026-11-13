@@ -1,0 +1,46 @@
+{
+  "project": "Brain MRI Tumor vs No-Tumor - OOD Generalization (10 Models)",
+  "architecture": "mobilenetv2_100",
+  "variant": "mobilenetv2_100_not_augmentation",
+  "num_classes": 2,
+  "id2label": {
+    "0": "no_tumor",
+    "1": "tumor"
+  },
+  "label2id": {
+    "no_tumor": 0,
+    "tumor": 1
+  },
+  "input_size": 224,
+  "preprocessing": {
+    "square_pad": true,
+    "resize": [
+      224,
+      224
+    ],
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "decision_threshold": 0.5,
+  "augmentation_strength": 0.0,
+  "github_repository": "https://github.com/fatihaybsn/BrainMRI-OOD-10Models",
+  "github_commit": "a9920408189230b886773a64d113eb35bcba1971",
+  "original_checkpoint_sha256": "f995095dab16cc0099835d4820c48d8495de77ecd54cf6bdbc1fbe83773aae90",
+  "safetensors_sha256": "8449eccfe66d885453c6bf6a71ded3e48894a20eb5b69c7e5b49f8fbb6891dd6",
+  "metrics": {
+    "accuracy": 0.6387949584998462,
+    "auc": 0.8894070760656259,
+    "f1": 0.4496487119437939,
+    "recall_sensitivity": 0.2900302114803625,
+    "precision": 1.0,
+    "kappa": 0.286403720440486
+  }
+}
